@@ -1,1 +1,0 @@
-const words = ["ratan", "sen", "arka", "datta"]
