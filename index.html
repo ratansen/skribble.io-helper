@@ -62,7 +62,7 @@
     window.onload = function initial() {
         for (let i = 1; i <= letters; i++) {
             word.innerHTML += `
-                <input class='letter' maxlength = "1" onkeyup='filterword()' id=letter${i} placeholder=${i} value = ""/>
+                <input class='letter' maxlength = "1" onkeyup="filterword()" id=letter${i} placeholder=${i} value = ""/>
             `
         }
         word_length.innerHTML = letters;
@@ -72,14 +72,9 @@
     function update(type) {
         if (type.innerText === '+') {
             letters++;
-            var to_append = document.createElement('input');
-            to_append.className = "letter";
-            to_append.maxLength = "1";
-            to_append.onkeyup = 'filterword()';
-            to_append.id = `letter${letters}`;
-            to_append.value = "";
-            to_append.placeholder = `${letters}`;
-            word.appendChild(to_append);
+            word.innerHTML += `
+                <input class='letter' maxlength = "1" onkeyup="filterword()" id=letter${letters} placeholder=${letters} value = ""/>
+            `
         }
         else {
             if(letters == 0) return;
