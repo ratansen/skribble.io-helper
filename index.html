@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,69 +8,121 @@
     <title>Scribbl</title>
 </head>
 <style>
-    body{
+    body {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
         width: 100vw;
     }
-    .letter{
+
+    .letter {
         width: 30px;
         height: 30px;
     }
-    #word{
+
+    #word {
         display: flex;
     }
-    #suggestion{
+
+    #suggestion {
         display: flexbox;
         overflow-wrap: break-word;
         line-height: 50px;
     }
-    .suggested-word{
+
+    .suggested-word {
         border: 1px solid green;
         padding: 5px;
         margin: 5px;
     }
 </style>
-<body>
-<button onclick="update(this)">+</button>
-<button onclick="update(this)">-</button>
-<br>
-<br>
-<br>
-<div id="word">
 
-</div>
-<div id="suggestion">
-    
-</div>
+<body>
+    <button onclick="update(this)">-</button>
+    <span id="word_length"></span>
+    <button onclick="update(this)">+</button>
+    <br>
+    <br>
+    <br>
+    <div id="word">
+
+    </div>
+    <div id="suggestion">
+
+    </div>
 
 </body>
 <script>
     var letters = 5;
     const words = ["ratan", "sen", "arka", "datta"]
     const word = document.getElementById("word");
-    window.onload = function initial(){
-        console.log(word);
-        for(let i = 1; i <= letters; i++){
+    const word_length = document.getElementById("word_length");
+    window.onload = function initial() {
+        for (let i = 1; i <= letters; i++) {
             word.innerHTML += `
-                <input class='letter' id=letter${i} />
+                <input class='letter' onkeyup='filterword()' id=letter${i} value = ""/>
             `
         }
+        word_length.innerHTML = letters;
+        filterword();
     }
 
-    function update(type){
-        if(type.innerText === '+') {
+    function update(type) {
+        if (type.innerText === '+') {
             letters++;
             var to_append = document.createElement('input');
             to_append.className = "letter";
+            to_append.onkeyup = 'filterword()';
             to_append.id = `letter${letters}`;
+            to_append.value = "";
             word.appendChild(to_append);
         }
         else {
+            if(letters == 0) return;
             letters--;
             word.removeChild(word.lastElementChild);
         }
+        word_length.innerHTML = letters;
+        filterword();
     }
+    var current = ""
+    var allVal = []
+    var filtered_list = []
+    function filterword(){
+        var allVal = document.querySelectorAll(".letter");
+        current = ""
+        for(let i = 0; i < allVal.length; i++){
+            if(allVal[i].value == ""){
+                current += '?';
+            }
+            else current += allVal[i].value;
+        }
+        filtered_list = [];
+        for(var word of words){
+            var flag = 1;
+            if(word.length != current.length) continue;
+            for(var i = 0; i < current.length; i++){
+                if(current[i] === '?') continue;
+                if(word[i] !== current[i]) flag = 0;
+            }
+            if(flag){
+                filtered_list.push(word);
+            }
+        }
+        createSuggestions(filtered_list);
+    }
+
+    var suggestion_box = document.getElementById("suggestion")
+    function createSuggestions(filtered_list){
+        suggestion_box.innerHTML = ""
+        for(var word of filtered_list){
+            var newsugg = document.createElement('span');
+            newsugg.className = "suggested-word";
+            newsugg.innerText = word;
+            suggestion_box.appendChild(newsugg);
+        }
+    }
+
 </script>
+
 </html>
